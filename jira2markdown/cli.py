@@ -1,3 +1,4 @@
+import signal
 import sys
 from pathlib import Path  # noqa: TC003
 from typing import Annotated
@@ -5,6 +6,14 @@ from typing import Annotated
 import typer
 
 from jira2markdown import convert
+
+# Let the OS handle SIGPIPE (e.g. jira2markdown -f big.txt | head)
+# instead of Python printing an unhandled BrokenPipeError traceback.
+# AttributeError guard: Windows has no SIGPIPE.
+try:
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+except AttributeError:
+    pass
 
 
 def main(
@@ -18,7 +27,10 @@ def main(
     if text is not None:
         content = text
     elif file is not None:
-        content = file.read_text()
+        try:
+            content = file.read_text()
+        except FileNotFoundError:
+            raise typer.BadParameter(f"File not found: {file}", param_hint="'--file'")
     elif not sys.stdin.isatty():
         content = sys.stdin.read()
     else:
