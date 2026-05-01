@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 from pyparsing import (
@@ -28,17 +30,12 @@ class Table(AbstractMarkup):
         lines = [line for line in tokens if len(line) > 0]
         max_columns_count = max(len(row) for row in tokens)
 
-        # Converts multiline text to one line,
-        # because markdown doesn't support multiline text in table cells
         output = [
             "|" + "|".join(self.markup.transform_string(cell).replace("\n", "<br>") for cell in row) + "|"
             for row in lines
         ]
 
-        # Header row must have the maximum columns of the table
         output[0] += "|" * (max_columns_count - len(lines[0]))
-
-        # Insert header delimiter after the first row
         output.insert(1, "|" + "---|" * max(max_columns_count, 1))
 
         return "\n".join(output) + "\n"

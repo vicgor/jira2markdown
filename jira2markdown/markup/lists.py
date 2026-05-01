@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 from pyparsing import (
@@ -23,27 +25,34 @@ from jira2markdown.markup.text_effects import BlockQuote, Color
 
 
 class ListIndentState:
-    def __init__(self):
-        self.indent = 0
+    def __init__(self) -> None:
+        self.indent: int = 0
 
-    def reset(self):
+    def reset(self) -> None:
         self.indent = 0
 
 
 class ListIndent(Token):
-    def __init__(self, indent_state: ListIndentState, tokens: str):
+    def __init__(self, indent_state: ListIndentState, tokens: str) -> None:
         super().__init__()
-
         self.indent_state = indent_state
         self.tokens = tokens
 
-    def parseImpl(self, instring, loc, doActions=True):
+    def postParse(
+        self,
+        instring: str,
+        loc: int,
+        tokenlist: ParseResults,
+    ) -> ParseResults:
+        return tokenlist
+
+    def parse_impl(self, instring: str, loc: int, do_actions: bool = True) -> tuple[int, ParseResults]:  # type: ignore[override]
         exprs = []
         for token in self.tokens:
             for indent in range(self.indent_state.indent + 1, max(0, self.indent_state.indent - 2), -1):
                 exprs.append(Literal(token * indent + " "))
 
-        loc, result = MatchFirst(exprs).parseImpl(instring, loc, doActions)
+        loc, result = MatchFirst(exprs).parse_impl(instring, loc, do_actions)
         self.indent_state.indent = len(result[0]) - 1
         return loc, result
 
@@ -51,15 +60,22 @@ class ListIndent(Token):
 class List(AbstractMarkup):
     is_inline_element = False
 
-    def __init__(self, nested_token: str, nested_indent: int, tokens: str, indent: int, bullet: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
+    def __init__(
+        self,
+        nested_token: str,
+        nested_indent: int,
+        tokens: str,
+        indent: int,
+        bullet: str,
+        *args: object,
+        **kwargs: object,
+    ) -> None:
+        super().__init__(*args, **kwargs)  # type: ignore[arg-type]
         self.nested_token = nested_token
         self.nested_indent = nested_indent
         self.tokens = tokens
         self.indent = indent
         self.bullet = bullet
-
         self.indent_state = ListIndentState()
 
     def action(self, tokens: ParseResults) -> str:
@@ -77,10 +93,12 @@ class List(AbstractMarkup):
 
             line_padding = " " * count
             item_padding = " " * (count - self.indent) + self.bullet + " "
-            text = self.markup.transform_string(text).splitlines() or [""]
+            text_lines = self.markup.transform_string(text).splitlines() or [""]
 
             result.append(
-                "\n".join([item_padding + line if i == 0 else line_padding + line for i, line in enumerate(text)]),
+                "\n".join(
+                    [item_padding + ln if i == 0 else line_padding + ln for i, ln in enumerate(text_lines)],
+                ),
             )
 
         self.indent_state.reset()
@@ -111,15 +129,13 @@ class List(AbstractMarkup):
 
 
 class UnorderedList(List):
-    def __init__(self, *args, **kwargs):
-        super().__init__(nested_token="#", nested_indent=3, tokens="*-", indent=2, bullet="-", *args, **kwargs)
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        super().__init__(nested_token="#", nested_indent=3, tokens="*-", indent=2, bullet="-", *args, **kwargs)  # type: ignore[misc]
 
     def action(self, tokens: ParseResults) -> str:
         result = super().action(tokens)
         first_line = (result.splitlines() or [""])[0].strip()
 
-        # Text with dashed below it turns into a heading. To prevent this
-        # add a line break before an empty list.
         if first_line == "-":
             return "\n" + result
         else:
@@ -127,5 +143,5 @@ class UnorderedList(List):
 
 
 class OrderedList(List):
-    def __init__(self, *args, **kwargs):
-        super().__init__(nested_token="*", nested_indent=2, tokens="#", indent=3, bullet="1.", *args, **kwargs)
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        super().__init__(nested_token="*", nested_indent=2, tokens="#", indent=3, bullet="1.", *args, **kwargs)  # type: ignore[misc]

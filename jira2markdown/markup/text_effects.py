@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 from pyparsing import (
@@ -33,13 +35,15 @@ from jira2markdown.markup.links import Attachment, Link, Mention
 
 
 class QuotedElement(AbstractMarkup):
-    TOKEN = ""
-    QUOTE_CHAR = ""
-    END_QUOTE_CHAR = ""
+    TOKEN: str = ""
+    QUOTE_CHAR: str = ""
+    END_QUOTE_CHAR: str = ""
 
     def action(self, tokens: ParseResults) -> str:
         return (
-            self.QUOTE_CHAR + self.inline_markup.transform_string(tokens[0]) + (self.END_QUOTE_CHAR or self.QUOTE_CHAR)
+            self.QUOTE_CHAR
+            + self.inline_markup.transform_string(tokens[0])
+            + (self.END_QUOTE_CHAR or self.QUOTE_CHAR)
         )
 
     def get_ignore_expr(self) -> ParserElement:
@@ -117,7 +121,8 @@ class Color(AbstractMarkup):
         text = self.inline_markup.transform_string(tokens.text)
 
         if tokens.red and tokens.green and tokens.blue:
-            color = f"#{int(tokens.red):x}{int(tokens.green):x}{int(tokens.blue):x}"
+            # Use :02x to ensure two hex digits (e.g. 15 -> "0f", not "f")
+            color = f"#{int(tokens.red):02x}{int(tokens.green):02x}{int(tokens.blue):02x}"
         else:
             color = tokens.color[0]
 
@@ -173,7 +178,9 @@ class Quote(AbstractMarkup):
 
 class BlockQuote(AbstractMarkup):
     def action(self, tokens: ParseResults) -> str:
-        text = self.markup.transform_string("\n".join([line.lstrip() for line in tokens[0].strip().splitlines()]))
+        text = self.markup.transform_string(
+            "\n".join([line.lstrip() for line in tokens[0].strip().splitlines()]),
+        )
         return "\n".join([f"> {line}" for line in text.splitlines()])
 
     @property
@@ -192,7 +199,7 @@ class Monospaced(AbstractMarkup):
 
 class EscSpecialChars(AbstractMarkup):
     """
-    Escapes '*' characters that are not a part of any expression grammar
+    Escapes '*' characters that are not a part of any expression grammar.
     """
 
     @property

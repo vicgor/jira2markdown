@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import re
-from typing import Dict, List
 
 from pyparsing import (
     Combine,
@@ -20,9 +21,9 @@ from jira2markdown.markup.base import AbstractMarkup
 
 
 class Image(AbstractMarkup):
-    ALLOWED_ATTRS = ("width", "height")
+    ALLOWED_ATTRS: tuple[str, ...] = ("width", "height")
 
-    def _parse_attrs(self, attrs: List[List[str]]) -> Dict:
+    def _parse_attrs(self, attrs: list[list[str]]) -> dict[str, str]:
         return {name_value[0].lower().strip(): name_value[-1].strip() for name_value in attrs}
 
     def action(self, tokens: ParseResults) -> str:

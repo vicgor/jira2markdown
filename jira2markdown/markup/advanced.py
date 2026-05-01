@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pyparsing import (
     Combine,
     FollowedBy,
@@ -58,7 +60,9 @@ class Panel(AbstractMarkup):
         else:
             prefix = ""
 
-        text = self.markup.transform_string("\n".join([line.lstrip() for line in tokens.text.strip().splitlines()]))
+        text = self.markup.transform_string(
+            "\n".join([line.lstrip() for line in tokens.text.strip().splitlines()]),
+        )
         return prefix + "\n".join([f"> {line}" for line in text.splitlines()])
 
     @property

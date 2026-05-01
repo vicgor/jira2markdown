@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from string import punctuation
 
 from pyparsing import (
@@ -43,7 +45,7 @@ class MailTo(AbstractMarkup):
 
 
 class Link(AbstractMarkup):
-    URL_PREFIXES = ["http", "ftp"]
+    URL_PREFIXES: tuple[str, ...] = ("http", "ftp")
 
     def action(self, tokens: ParseResults) -> str:
         alias = self.markup.transform_string(getattr(tokens, "alias", ""))
