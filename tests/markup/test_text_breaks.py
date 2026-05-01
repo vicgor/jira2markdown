@@ -1,3 +1,5 @@
+import pytest
+
 from jira2markdown.parser import convert
 
 
@@ -7,25 +9,37 @@ class TestLineBreak:
 
 
 class TestNdash:
-    def test_basic_conversion(self) -> None:
-        assert convert("--") == "–"
-        assert convert("abc -- def") == "abc – def"
+    @pytest.mark.parametrize("src,expected", [
+        ("--", "–"),
+        ("abc -- def", "abc – def"),
+    ])
+    def test_basic_conversion(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
-    def test_word_connections(self) -> None:
-        assert convert("abc--def") == "abc--def"
-        assert convert("abc --def") == "abc --def"
-        assert convert("abc-- def") == "abc-- def"
+    @pytest.mark.parametrize("src,expected", [
+        ("abc--def", "abc--def"),
+        ("abc --def", "abc --def"),
+        ("abc-- def", "abc-- def"),
+    ])
+    def test_word_connections(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
 
 class TestMdash:
-    def test_basic_conversion(self) -> None:
-        assert convert("---") == "—"
-        assert convert("abc --- def") == "abc — def"
+    @pytest.mark.parametrize("src,expected", [
+        ("---", "—"),
+        ("abc --- def", "abc — def"),
+    ])
+    def test_basic_conversion(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
-    def test_word_connections(self) -> None:
-        assert convert("abc---def") == "abc---def"
-        assert convert("abc ---def") == "abc ---def"
-        assert convert("abc--- def") == "abc--- def"
+    @pytest.mark.parametrize("src,expected", [
+        ("abc---def", "abc---def"),
+        ("abc ---def", "abc ---def"),
+        ("abc--- def", "abc--- def"),
+    ])
+    def test_word_connections(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
 
 class TestRuler:
@@ -35,10 +49,13 @@ class TestRuler:
     def test_indent(self) -> None:
         assert convert(" ---- ") == "\n----"
 
-    def test_word_connections(self) -> None:
-        assert convert("abc----def") == "abc----def"
-        assert convert("abc ----def") == "abc ----def"
-        assert convert("abc---- def") == "abc---- def"
-        assert convert("abc ---- def") == "abc ---- def"
-        assert convert("abc ---- ") == "abc ---- "
-        assert convert(" ---- def") == " ---- def"
+    @pytest.mark.parametrize("src,expected", [
+        ("abc----def", "abc----def"),
+        ("abc ----def", "abc ----def"),
+        ("abc---- def", "abc---- def"),
+        ("abc ---- def", "abc ---- def"),
+        ("abc ---- ", "abc ---- "),
+        (" ---- def", " ---- def"),
+    ])
+    def test_word_connections(self, src: str, expected: str) -> None:
+        assert convert(src) == expected

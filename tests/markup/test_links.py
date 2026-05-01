@@ -1,28 +1,41 @@
+import pytest
+
 from jira2markdown.parser import convert
+
+_USERNAMES: dict[str, str] = {"100:internal-id": "elliot"}
 
 
 class TestMailTo:
     def test_basic_conversion(self) -> None:
         assert convert("[mailto:box@example.com]") == "<box@example.com>"
 
-    def test_alias(self) -> None:
-        assert convert("[box@example.com|mailto:box@example.com]") == "<box@example.com>"
-        assert convert("[Some text|mailto:home_box@domain-name.com]") == "[Some text](mailto:home_box@domain-name.com)"
+    @pytest.mark.parametrize("src,expected", [
+        ("[box@example.com|mailto:box@example.com]", "<box@example.com>"),
+        ("[Some text|mailto:home_box@domain-name.com]", "[Some text](mailto:home_box@domain-name.com)"),
+    ])
+    def test_alias(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
 
 class TestLink:
-    def test_basic_conversion(self) -> None:
-        assert convert("[http://example.com]") == "<http://example.com>"
-        assert convert("[ftp://example.com]") == "<ftp://example.com>"
-        assert convert("[WWW.EXAMPLE.COM]") == "<https://WWW.EXAMPLE.COM>"
+    @pytest.mark.parametrize("src,expected", [
+        ("[http://example.com]", "<http://example.com>"),
+        ("[ftp://example.com]", "<ftp://example.com>"),
+        ("[WWW.EXAMPLE.COM]", "<https://WWW.EXAMPLE.COM>"),
+    ])
+    def test_basic_conversion(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
     def test_alias(self) -> None:
         assert convert("[Example text|http://example.com]") == "[Example text](http://example.com)"
 
-    def test_text(self) -> None:
-        assert convert("[Text in square brackets]") == "[Text in square brackets]"
-        assert convert("[Some text|]") == r"[Some text\|]"
-        assert convert("[Some text|More text]") == r"[Some text\|More text]"
+    @pytest.mark.parametrize("src,expected", [
+        ("[Text in square brackets]", "[Text in square brackets]"),
+        ("[Some text|]", r"[Some text\|]"),
+        ("[Some text|More text]", r"[Some text\|More text]"),
+    ])
+    def test_text(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
 
 class TestAttachment:
@@ -59,8 +72,10 @@ class TestMention:
         assert convert("[~userA].") == "@userA."
         assert convert("[~userA]:") == "@userA:"
         assert convert("[~userA]?") == "@userA?"
-
-    def test_preceding_punctuation(self) -> None:
-        assert convert("([~userA])") == "(@userA)"
-        assert convert(",[~userA],") == ",@userA,"
-        assert convert(";[~userA]") == ";@userA"
+    @pytest.mark.parametrize("src,expected", [
+        ("([~userA])", "(@userA)"),
+        (",[~userA],", ",@userA,"),
+        (";[~userA]", ";@userA"),
+    ])
+    def test_preceding_punctuation(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
