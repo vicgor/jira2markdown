@@ -59,3 +59,8 @@ class TestMention:
         assert convert("[~userA].") == "@userA."
         assert convert("[~userA]:") == "@userA:"
         assert convert("[~userA]?") == "@userA?"
+
+    def test_preceding_punctuation(self) -> None:
+        assert convert("([~userA])") == "(@userA)"
+        assert convert(",[~userA],") == ",@userA,"
+        assert convert(";[~userA]") == ";@userA"

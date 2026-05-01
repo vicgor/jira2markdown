@@ -95,8 +95,9 @@ class Mention(AbstractMarkup):
             + Word(alphanums + ":-").set_results_name("accountid")
             + "]",
         )
+        PRECEDED_BY_SEP = PrecededBy(White() | Char(punctuation, exclude_chars="]"), retreat=1)
         return (
-            (StringStart() | Optional(PrecededBy(White(), retreat=1), default=" "))
+            (StringStart() | Optional(PRECEDED_BY_SEP, default=" "))
             + MENTION.set_parse_action(self.action)
             + (
                 StringEnd()
