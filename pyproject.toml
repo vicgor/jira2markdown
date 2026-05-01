@@ -23,13 +23,14 @@ classifiers = [
 ]
 dependencies = [
     "pyparsing>=3",
+    "typer>=0.25.1",
 ]
 
 [project.urls]
 repository = "https://github.com/vicgor/jira2markdown"
 
 [project.scripts]
-jira2markdown = "jira2markdown.cli:main"
+jira2markdown = "jira2markdown.cli:cli"
 
 [dependency-groups]
 dev = [
