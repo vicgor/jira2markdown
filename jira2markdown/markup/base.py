@@ -1,15 +1,29 @@
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from typing import Any
+
 from pyparsing import Forward, ParserElement
 
 
-class AbstractMarkup:
+class AbstractMarkup(ABC):
     is_inline_element: bool = True
 
-    def __init__(self, inline_markup: Forward, markup: Forward, usernames: dict):
+    def __init__(
+        self,
+        inline_markup: Forward,
+        markup: Forward,
+        usernames: dict[str, str] | None = None,
+    ) -> None:
         self.inline_markup = inline_markup
         self.markup = markup
-        self.usernames = usernames
-        self.init_kwargs = {"inline_markup": inline_markup, "markup": markup, "usernames": usernames}
+        self.usernames: dict[str, str] = usernames or {}
+        self.init_kwargs: dict[str, Any] = {
+            "inline_markup": inline_markup,
+            "markup": markup,
+            "usernames": self.usernames,
+        }
 
     @property
-    def expr(self) -> ParserElement:
-        raise NotImplementedError
+    @abstractmethod
+    def expr(self) -> ParserElement: ...
