@@ -5,12 +5,12 @@ from jira2markdown import convert
 
 
 class TestLineBreakIndent:
-    def test_ruler(self):
+    def test_ruler(self) -> None:
         assert convert(r"Text\\ ---- ") == "Text\n\n----"
 
 
 class TestBlockQuoteContent:
-    def test_list(self):
+    def test_list(self) -> None:
         assert (
             convert(
                 """
@@ -28,7 +28,7 @@ class TestBlockQuoteContent:
 
 
 class TestRecursiveContent:
-    def test_bold_color(self):
+    def test_bold_color(self) -> None:
         assert (
             convert("*text {color:red}*text inside*{color} outside*")
             == '**text <font color="red">**text inside**</font> outside**'
@@ -38,7 +38,7 @@ class TestRecursiveContent:
             == r'**text <font color="red">contains\* token</font> outside**'
         )
 
-    def test_strikethrough_color(self):
+    def test_strikethrough_color(self) -> None:
         assert (
             convert("-text {color:green}-text inside-{color} outside-")
             == '~~text <font color="green">~~text inside~~</font> outside~~'
@@ -48,7 +48,7 @@ class TestRecursiveContent:
             == '~~text <font color="green">contains- token</font> outside~~'
         )
 
-    def test_underline_color(self):
+    def test_underline_color(self) -> None:
         assert (
             convert("+text {color:blue}+text inside+{color} outside+")
             == '<u>text <font color="blue"><u>text inside</u></font> outside</u>'
@@ -58,7 +58,7 @@ class TestRecursiveContent:
             == '<u>text <font color="blue">contains+ token</font> outside</u>'
         )
 
-    def test_inlinequote_color(self):
+    def test_inlinequote_color(self) -> None:
         assert (
             convert("??text {color:blue}??text inside??{color} outside??")
             == '<q>text <font color="blue"><q>text inside</q></font> outside</q>'
@@ -68,7 +68,7 @@ class TestRecursiveContent:
             == '<q>text <font color="blue">contains?? token</font> outside</q>'
         )
 
-    def test_superscript_color(self):
+    def test_superscript_color(self) -> None:
         assert (
             convert("^text {color:blue}^text inside^{color} outside^")
             == '<sup>text <font color="blue"><sup>text inside</sup></font> outside</sup>'
@@ -78,10 +78,10 @@ class TestRecursiveContent:
             == '<sup>text <font color="blue">contains^ token</font> outside</sup>'
         )
 
-    def test_superscript_attachment(self):
+    def test_superscript_attachment(self) -> None:
         assert convert("^text [^attachment.ext] outside^") == "<sup>text [attachment.ext](attachment.ext) outside</sup>"
 
-    def test_subscript_color(self):
+    def test_subscript_color(self) -> None:
         assert (
             convert("~text {color:blue}~text inside~{color} outside~")
             == '<sub>text <font color="blue"><sub>text inside</sub></font> outside</sub>'
@@ -91,7 +91,7 @@ class TestRecursiveContent:
             == '<sub>text <font color="blue">contains~ token</font> outside</sub>'
         )
 
-    def test_subscript_mention(self):
+    def test_subscript_mention(self) -> None:
         assert convert("~text [~username] outside~") == "<sub>text @username outside</sub>"
 
 
@@ -111,58 +111,58 @@ class TestRecursiveContent:
     ids=["headings", "bold", "strikethrough", "underline", "inlinequote", "superscript", "subscript", "color", "quote"],
 )
 class TestInlineElements:
-    def test_headings(self, token, test_input, expected):
+    def test_headings(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "h2. Heading") == expected % "h2. Heading"
 
-    def test_limited_markup(self, token, test_input, expected):
+    def test_limited_markup(self, token: str, test_input: str, expected: str) -> None:
         if token == "subscript":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "h2. ~Heading~") == expected % "h2. <sub>Heading</sub>"
 
-    def test_quote(self, token, test_input, expected):
+    def test_quote(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "bq. Quote") == expected % "bq. Quote"
 
-    def test_table(self, token, test_input, expected):
+    def test_table(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "|Table") == expected % "|Table"
 
-    def test_list(self, token, test_input, expected):
+    def test_list(self, token: str, test_input: str, expected: str) -> None:
         if token == "bold":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "* Item") == expected % r"\* Item"
 
-    def test_ruler(self, token, test_input, expected):
+    def test_ruler(self, token: str, test_input: str, expected: str) -> None:
         if token == "strikethrough":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "----") == expected % "----"
 
-    def test_bold(self, token, test_input, expected):
+    def test_bold(self, token: str, test_input: str, expected: str) -> None:
         if token == "bold":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "*Bold text*") == expected % "**Bold text**"
 
-    def test_color(self, token, test_input, expected):
+    def test_color(self, token: str, test_input: str, expected: str) -> None:
         if token == "color":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "{color:red}Red text{color}") == expected % '<font color="red">Red text</font>'
 
-    def test_blockquote(self, token, test_input, expected):
+    def test_blockquote(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "{quote}Quote text{quote}") == expected % "> Quote text"
 
-    def test_monospaced(self, token, test_input, expected):
+    def test_monospaced(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "{{monospaced}}") == expected % "`monospaced`"
 
-    def test_image(self, token, test_input, expected):
+    def test_image(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "!attached-image.gif!") == expected % "![attached-image.gif](attached-image.gif)"
 
-    def test_link(self, token, test_input, expected):
+    def test_link(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "[http://example.com]") == expected % "<http://example.com>"
 
-    def test_mention(self, token, test_input, expected):
+    def test_mention(self, token: str, test_input: str, expected: str) -> None:
         assert convert(test_input % "[~username]") == expected % "@username"
 
 
@@ -178,7 +178,7 @@ class TestInlineElements:
     ids=["blockquote", "panel", "table", "unordered_list", "ordered_list"],
 )
 class TestBlockElements:
-    def render_expected(self, expected, text):
+    def render_expected(self, expected: list[str], text: str) -> str:
         if len(expected) == 1:
             return expected[0] % text
 
@@ -187,95 +187,95 @@ class TestBlockElements:
             [first_line % line if i == 0 else next_line % line for i, line in enumerate(text.splitlines())],
         )
 
-    def test_headings(self, token, test_input, expected):
+    def test_headings(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "h2. Heading") == self.render_expected(expected, "## Heading")
 
-    def test_quote(self, token, test_input, expected):
+    def test_quote(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "bq. Quote") == self.render_expected(expected, "> Quote")
 
-    def test_table(self, token, test_input, expected):
+    def test_table(self, token: str, test_input: str, expected: list[str]) -> None:
         if token == "table":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "|Table") == self.render_expected(expected, "|Table|\n|---|\n")
 
-    def test_list(self, token, test_input, expected):
+    def test_list(self, token: str, test_input: str, expected: list[str]) -> None:
         if token in ["unordered_list", "ordered_list"]:
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "* Item") == self.render_expected(expected, "- Item")
 
-    def test_bold(self, token, test_input, expected):
+    def test_bold(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "*Bold text*") == self.render_expected(expected, "**Bold text**")
 
-    def test_color(self, token, test_input, expected):
+    def test_color(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "{color:red}Red text{color}") == self.render_expected(
             expected,
             '<font color="red">Red text</font>',
         )
 
-    def test_blockquote(self, token, test_input, expected):
+    def test_blockquote(self, token: str, test_input: str, expected: list[str]) -> None:
         if token == "blockquote":
             pytest.skip(f"Skip nested tests for {token} token")
         else:
             assert convert(test_input % "{quote}Quote text{quote}") == self.render_expected(expected, "> Quote text")
 
-    def test_monospaced(self, token, test_input, expected):
+    def test_monospaced(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "{{monospaced}}") == self.render_expected(expected, "`monospaced`")
 
-    def test_image(self, token, test_input, expected):
+    def test_image(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "!attached-image.gif!") == self.render_expected(
             expected,
             "![attached-image.gif](attached-image.gif)",
         )
 
-    def test_link(self, token, test_input, expected):
+    def test_link(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "[http://example.com]") == self.render_expected(expected, "<http://example.com>")
 
-    def test_mention(self, token, test_input, expected):
+    def test_mention(self, token: str, test_input: str, expected: list[str]) -> None:
         assert convert(test_input % "[~username]") == self.render_expected(expected, "@username")
 
 
 class TestStrikethroughContent:
-    def test_color(self):
+    def test_color(self) -> None:
         assert convert("-{color:red}-text-{color}-") == '~~<font color="red">~~text~~</font>~~'
 
-    def test_attachment(self):
+    def test_attachment(self) -> None:
         assert convert("-[^file-name.ext]-") == "~~[file-name.ext](file-name.ext)~~"
 
-    def test_mention(self):
+    def test_mention(self) -> None:
         assert convert("-[~user-name]-") == "~~@user-name~~"
 
-    def test_link(self):
+    def test_link(self) -> None:
         assert convert("-[http://site-name.tld]-") == "~~<http://site-name.tld>~~"
 
-    def test_image(self):
+    def test_image(self) -> None:
         assert convert("-!attached-image.gif!-") == "~~![attached-image.gif](attached-image.gif)~~"
 
 
 class TestTableContent:
-    def test_basic_markup(self):
+    def test_basic_markup(self) -> None:
         assert (
             convert("| Table *bold header* and {color:red}colored title{color} |")
             == '| Table **bold header** and <font color="red">colored title</font> |\n|---|\n'
         )
 
-    def test_cell_image(self):
+    def test_cell_image(self) -> None:
         assert convert("|!image.png|width=300!") == "|![image.png](image.png){width=300}|\n|---|\n"
 
-    def test_cell_link(self):
+    def test_cell_link(self) -> None:
         assert convert("|[link|http://example.com]|") == "|[link](http://example.com)|\n|---|\n"
 
-    def test_cell_mailto(self):
+    def test_cell_mailto(self) -> None:
         assert convert("|[mailto:user@example.com]|") == "|<user@example.com>|\n|---|\n"
         assert convert("|[-alias-|mailto:user@example.com]|") == "|[~~alias~~](mailto:user@example.com)|\n|---|\n"
 
-    def test_cell_mention(self):
+    def test_cell_mention(self) -> None:
         assert convert("|[user|~uuid]|", {"uuid": "elliot"}) == "|@elliot|\n|---|\n"
 
 
 class TestPanelContent:
-    def test_text_formatting(self):
+    def test_text_formatting(self) -> None:
         assert (
             convert(
                 """
@@ -292,7 +292,7 @@ line with !image.png|width=300!
 """
         )
 
-    def test_list(self):
+    def test_list(self) -> None:
         assert (
             convert(
                 """
@@ -310,7 +310,7 @@ line with !image.png|width=300!
 
 
 class TestListContent:
-    def test_broken_list_markup(self):
+    def test_broken_list_markup(self) -> None:
         assert (
             convert(
                 """
@@ -352,7 +352,7 @@ Hello
 """
         )
 
-    def test_list_blockquote(self):
+    def test_list_blockquote(self) -> None:
         assert (
             convert(
                 """
@@ -394,7 +394,7 @@ Some quote
 """
         )
 
-    def test_list_panel_list(self):
+    def test_list_panel_list(self) -> None:
         assert (
             convert(
                 """
@@ -436,7 +436,7 @@ Some quote
 """
         )
 
-    def test_list_color_list(self):
+    def test_list_color_list(self) -> None:
         assert (
             convert(
                 """
@@ -488,12 +488,12 @@ Some text
 
 
 class TestLink:
-    def test_alias_markup(self):
+    def test_alias_markup(self) -> None:
         assert (
             convert("[+box@example.com+|mailto:box@example.com]") == "[<u>box@example.com</u>](mailto:box@example.com)"
         )
         assert convert("[box+tag@example.com|mailto:box+tag@example.com]") == "<box+tag@example.com>"
 
-    def test_text_markup(self):
+    def test_text_markup(self) -> None:
         assert convert("[Text in -square- brackets]") == "[Text in ~~square~~ brackets]"
         assert convert("[Some *text*|More ^text^]") == r"[Some **text**\|More <sup>text</sup>]"

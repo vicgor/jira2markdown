@@ -3,7 +3,7 @@ from jira2markdown.parser import convert
 
 
 class TestTable:
-    def test_basic_conversion(self):
+    def test_basic_conversion(self) -> None:
         assert (
             convert(
                 """
@@ -20,7 +20,7 @@ class TestTable:
 """
         )
 
-    def test_mixed_column_separator(self):
+    def test_mixed_column_separator(self) -> None:
         assert (
             convert(
                 """
@@ -37,7 +37,7 @@ class TestTable:
 """
         )
 
-    def test_uneven_columns_count(self):
+    def test_uneven_columns_count(self) -> None:
         assert (
             convert(
                 """
@@ -54,7 +54,7 @@ class TestTable:
 """
         )
 
-    def test_open_end_row(self):
+    def test_open_end_row(self) -> None:
         assert (
             convert(
                 """
@@ -71,10 +71,10 @@ class TestTable:
 """
         )
 
-    def test_smallest_table(self):
+    def test_smallest_table(self) -> None:
         assert convert("|header") == "|header|\n|---|\n"
 
-    def test_multiline_text(self):
+    def test_multiline_text(self) -> None:
         assert (
             convert(
                 """
@@ -97,7 +97,7 @@ row
 """
         )
 
-    def test_table_adjacent_text(self):
+    def test_table_adjacent_text(self) -> None:
         assert (
             convert(
                 """
@@ -118,7 +118,7 @@ text after table
 """
         )
 
-    def test_empty_rows(self):
+    def test_empty_rows(self) -> None:
         assert (
             convert(
                 """
@@ -136,7 +136,7 @@ text after table
 """
         )
 
-    def test_empty_rows_with_uneven_columns(self):
+    def test_empty_rows_with_uneven_columns(self) -> None:
         assert (
             convert(
                 """
@@ -153,7 +153,7 @@ text after table
 """
         )
 
-    def test_empty_start_lines(self):
+    def test_empty_start_lines(self) -> None:
         assert convert("  \n|header") == "  \n|header|\n|---|\n"
         assert convert("  \n \t \n|header") == "  \n \t \n|header|\n|---|\n"
         assert convert("  \n text \n|header") == "  \n text \n\n|header|\n|---|\n"
