@@ -65,10 +65,7 @@ select = [
     "UP",     # pyupgrade
     "W",      # pycodestyle warnings
 ]
-ignore = [
-    "ANN101", # missing type annotation for `self`
-    "ANN102", # missing type annotation for `cls`
-]
+ignore = []
 fixable = ["ALL"]
 unfixable = []
 
