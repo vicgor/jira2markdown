@@ -1,39 +1,41 @@
 name: CI
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: "3.12"
 
-      - name: Install Poetry
-        run: |
-          pip install poetry
-          poetry config virtualenvs.path ~/.cache/pypoetry/virtualenvs
-
-      - name: Restore virtualenv from cache
-        id: cache
-        uses: actions/cache@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ hashFiles('poetry.lock') }}
+          version: "latest"
+          enable-cache: true
 
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: poetry install
+      - name: Sync dependencies
+        run: uv sync --frozen
 
-      - run: poetry run ruff check
+      - name: Lint (ruff check)
+        run: uv run ruff check .
 
-      - run: poetry run ruff format --diff
+      - name: Format check (ruff format)
+        run: uv run ruff format --check .
 
-      - run: poetry run pytest
+      - name: Type check (mypy)
+        run: uv run mypy .
+
+      - name: Tests (pytest)
+        run: uv run pytest
