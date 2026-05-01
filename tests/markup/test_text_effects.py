@@ -177,6 +177,12 @@ class TestColor:
             == 'start <font color="#ff7f3f">rgba color</font> text'
         )
 
+    def test_rgba_zero_padding(self) -> None:
+        assert convert("{color:rgba(255,0,0,1)}x{color}") == '<font color="#ff0000">x</font>'
+        assert convert("{color:rgba(0,255,0,1)}x{color}") == '<font color="#00ff00">x</font>'
+        assert convert("{color:rgba(0,0,255,1)}x{color}") == '<font color="#0000ff">x</font>'
+        assert convert("{color:rgba(0,0,0,1)}x{color}") == '<font color="#000000">x</font>'
+
     def test_line_endings(self) -> None:
         assert convert("{color:#0077ff}colored{color}") == '<font color="#0077ff">colored</font>'
         assert convert("\n{color:#0077ff}colored{color}\n") == '\n<font color="#0077ff">colored</font>\n'
