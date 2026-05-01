@@ -1,1 +1,3 @@
-from .parser import convert  # noqa
+from .parser import convert
+
+__all__ = ["convert"]

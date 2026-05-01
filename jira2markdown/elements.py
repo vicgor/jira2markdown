@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING
 
 from pyparsing import Forward, MatchFirst, ParseExpression
 
 from jira2markdown.markup.advanced import Code, Noformat, Panel
-from jira2markdown.markup.base import AbstractMarkup
 from jira2markdown.markup.headings import Headings
 from jira2markdown.markup.images import Image
 from jira2markdown.markup.links import Attachment, Link, MailTo, Mention
@@ -28,7 +26,9 @@ from jira2markdown.markup.text_effects import (
 )
 
 if TYPE_CHECKING:
-    pass
+    from collections.abc import Iterable, Iterator
+
+    from jira2markdown.markup.base import AbstractMarkup
 
 _DEFAULT_ELEMENTS: list[type[AbstractMarkup]] = [
     UnorderedList,
