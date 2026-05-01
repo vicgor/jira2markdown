@@ -51,7 +51,7 @@ class Code(AbstractMarkup):
 
 class Panel(AbstractMarkup):
     def action(self, tokens: ParseResults) -> str:
-        for param, value in tokens.get("params", []):
+        for param, value in tokens.get("params", []):  # type: ignore[no-untyped-call]
             if param.lower() == "title":
                 prefix = f"> **{value}**\n"
                 break
