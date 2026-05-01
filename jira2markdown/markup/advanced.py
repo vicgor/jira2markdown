@@ -31,7 +31,7 @@ class Noformat(AbstractMarkup):
 
 class Code(AbstractMarkup):
     def action(self, tokens: ParseResults) -> str:
-        lang = tokens.lang or "Java"
+        lang = tokens.lang
         text = tokens.text.strip("\n")
         return f"```{lang}\n{text}\n```"
 

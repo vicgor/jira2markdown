@@ -47,7 +47,7 @@ def test_code():
 """,
             )
             == """
-```Java
+```
 def test_code():
     assert convert(...)
 ```
@@ -88,7 +88,7 @@ public String getFoo()
 """,
             )
             == """
-```Java
+```
 // Some comments here
 public String getFoo()
 {
