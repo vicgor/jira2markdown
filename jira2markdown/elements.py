@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING
 
 from pyparsing import Forward, MatchFirst, ParseExpression
@@ -94,7 +94,7 @@ class MarkupElements:
         inline_markup: Forward,
         markup: Forward,
         usernames: dict[str, str],
-        elements: Iterator[type[AbstractMarkup]],
+        elements: Iterable[type[AbstractMarkup]],
     ) -> ParseExpression:
         return MatchFirst(
             [
