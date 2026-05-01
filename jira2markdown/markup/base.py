@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from pyparsing import Forward, ParserElement
+if TYPE_CHECKING:
+    from pyparsing import Forward, ParserElement
 
 
 class AbstractMarkup(ABC):
