@@ -19,6 +19,7 @@ except AttributeError:
 def main(
     text: Annotated[str | None, typer.Argument(help="Jira markup text to convert")] = None,
     file: Annotated[Path | None, typer.Option("-f", "--file", help="File containing Jira markup")] = None,
+    output: Annotated[Path | None, typer.Option("-o", "--output", help="Write output to file")] = None,
 ) -> None:
     """Convert Jira markup to Markdown."""
     if text is not None and file is not None:
@@ -36,7 +37,11 @@ def main(
     else:
         raise typer.BadParameter("Provide TEXT, --file, or pipe input via stdin")
 
-    typer.echo(convert(content), nl=False)
+    result = convert(content)
+    if output is not None:
+        output.write_text(result)
+    else:
+        typer.echo(result, nl=False)
 
 
 def cli() -> None:

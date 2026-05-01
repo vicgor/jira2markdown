@@ -76,9 +76,37 @@ class TestErrorHandling:
         assert "/nonexistent/path.txt" in result.output
 
 
+class TestOutputFlag:
+    def test_writes_to_file(self, tmp_path: Path) -> None:
+        out = tmp_path / "out.md"
+        result = runner.invoke(app, ["*bold*", "-o", str(out)])
+        assert result.exit_code == 0
+        assert out.read_text() == "**bold**"
+
+    def test_long_flag(self, tmp_path: Path) -> None:
+        out = tmp_path / "out.md"
+        result = runner.invoke(app, ["*bold*", "--output", str(out)])
+        assert result.exit_code == 0
+        assert out.read_text() == "**bold**"
+
+    def test_output_no_stdout(self, tmp_path: Path) -> None:
+        out = tmp_path / "out.md"
+        result = runner.invoke(app, ["*bold*", "-o", str(out)])
+        assert result.output == ""
+
+    def test_file_input_with_output(self, tmp_path: Path) -> None:
+        src = tmp_path / "input.txt"
+        src.write_text("h1. Title\n*bold*")
+        out = tmp_path / "out.md"
+        result = runner.invoke(app, ["-f", str(src), "-o", str(out)])
+        assert result.exit_code == 0
+        assert out.read_text() == "# Title\n**bold**"
+
+
 class TestHelpOutput:
     def test_help(self) -> None:
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
         assert "Jira markup" in result.output
         assert "--file" in result.output
+        assert "--output" in result.output
