@@ -1,8 +1,10 @@
 import re
+from typing import Any
 
 from pyparsing import (
     Char,
     Combine,
+    Forward,
     LineEnd,
     LineStart,
     Literal,
@@ -23,21 +25,21 @@ from jira2markdown.markup.text_effects import BlockQuote, Color
 
 
 class ListIndentState:
-    def __init__(self):
+    def __init__(self) -> None:
         self.indent = 0
 
-    def reset(self):
+    def reset(self) -> None:
         self.indent = 0
 
 
 class ListIndent(Token):
-    def __init__(self, indent_state: ListIndentState, tokens: str):
+    def __init__(self, indent_state: ListIndentState, tokens: str) -> None:
         super().__init__()
 
         self.indent_state = indent_state
         self.tokens = tokens
 
-    def parseImpl(self, instring, loc, doActions=True):
+    def parseImpl(self, instring: str, loc: int, doActions: bool = True) -> tuple[int, Any]:
         exprs = []
         for token in self.tokens:
             for indent in range(self.indent_state.indent + 1, max(0, self.indent_state.indent - 2), -1):
@@ -51,8 +53,18 @@ class ListIndent(Token):
 class List(AbstractMarkup):
     is_inline_element = False
 
-    def __init__(self, nested_token: str, nested_indent: int, tokens: str, indent: int, bullet: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        nested_token: str,
+        nested_indent: int,
+        tokens: str,
+        indent: int,
+        bullet: str,
+        inline_markup: Forward,
+        markup: Forward,
+        usernames: dict[str, str] | None = None,
+    ) -> None:
+        super().__init__(inline_markup=inline_markup, markup=markup, usernames=usernames)
 
         self.nested_token = nested_token
         self.nested_indent = nested_indent
@@ -111,8 +123,22 @@ class List(AbstractMarkup):
 
 
 class UnorderedList(List):
-    def __init__(self, *args, **kwargs):
-        super().__init__(nested_token="#", nested_indent=3, tokens="*-", indent=2, bullet="-", *args, **kwargs)
+    def __init__(
+        self,
+        inline_markup: Forward,
+        markup: Forward,
+        usernames: dict[str, str] | None = None,
+    ) -> None:
+        super().__init__(
+            nested_token="#",
+            nested_indent=3,
+            tokens="*-",
+            indent=2,
+            bullet="-",
+            inline_markup=inline_markup,
+            markup=markup,
+            usernames=usernames,
+        )
 
     def action(self, tokens: ParseResults) -> str:
         result = super().action(tokens)
@@ -127,5 +153,19 @@ class UnorderedList(List):
 
 
 class OrderedList(List):
-    def __init__(self, *args, **kwargs):
-        super().__init__(nested_token="*", nested_indent=2, tokens="#", indent=3, bullet="1.", *args, **kwargs)
+    def __init__(
+        self,
+        inline_markup: Forward,
+        markup: Forward,
+        usernames: dict[str, str] | None = None,
+    ) -> None:
+        super().__init__(
+            nested_token="*",
+            nested_indent=2,
+            tokens="#",
+            indent=3,
+            bullet="1.",
+            inline_markup=inline_markup,
+            markup=markup,
+            usernames=usernames,
+        )
