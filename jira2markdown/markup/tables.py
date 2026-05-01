@@ -26,7 +26,7 @@ class Table(AbstractMarkup):
 
     def action(self, tokens: ParseResults) -> str:
         lines = [line for line in tokens if len(line) > 0]
-        max_columns_count = max(len(row) for row in tokens)
+        max_columns_count = max(len(row) for row in lines)
 
         # Converts multiline text to one line,
         # because markdown doesn't support multiline text in table cells

@@ -136,6 +136,23 @@ text after table
 """
         )
 
+    def test_empty_rows_with_uneven_columns(self):
+        assert (
+            convert(
+                """
+|
+||header 1||header 2||header 3||
+|cell 1|cell 2|cell 3|
+|
+""",
+            )
+            == """
+|header 1|header 2|header 3|
+|---|---|---|
+|cell 1|cell 2|cell 3|
+"""
+        )
+
     def test_empty_start_lines(self):
         assert convert("  \n|header") == "  \n|header|\n|---|\n"
         assert convert("  \n \t \n|header") == "  \n \t \n|header|\n|---|\n"
