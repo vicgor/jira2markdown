@@ -65,6 +65,17 @@ class TestMutuallyExclusive:
         assert "Use either TEXT or --file" in result.output
 
 
+class TestErrorHandling:
+    def test_file_not_found(self) -> None:
+        result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
+        assert result.exit_code != 0
+        assert "File not found" in result.output
+
+    def test_file_not_found_shows_path(self) -> None:
+        result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
+        assert "/nonexistent/path.txt" in result.output
+
+
 class TestHelpOutput:
     def test_help(self) -> None:
         result = runner.invoke(app, ["--help"])
