@@ -102,6 +102,11 @@ class TestOutputFlag:
         assert result.exit_code == 0
         assert out.read_text() == "# Title\n**bold**"
 
+    def test_output_unwritable(self) -> None:
+        result = runner.invoke(app, ["*bold*", "-o", "/nonexistent/dir/out.md"])
+        assert result.exit_code != 0
+        assert "Cannot write to" in result.output
+
 
 class TestHelpOutput:
     def test_help(self) -> None:
