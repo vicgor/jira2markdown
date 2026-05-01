@@ -1,4 +1,7 @@
-from typing import Iterable, Type
+from __future__ import annotations
+
+from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from pyparsing import Forward, MatchFirst, ParseExpression
 
@@ -24,57 +27,78 @@ from jira2markdown.markup.text_effects import (
     Underline,
 )
 
+if TYPE_CHECKING:
+    pass
 
-class MarkupElements(list):
-    def __init__(self, seq: Iterable = ()):
-        super().__init__(
-            seq
-            or [
-                UnorderedList,
-                OrderedList,
-                Code,
-                Noformat,
-                Monospaced,
-                Mention,
-                MailTo,
-                Attachment,
-                Link,
-                Image,
-                Table,
-                Headings,
-                Quote,
-                BlockQuote,
-                Panel,
-                Bold,
-                Ndash,
-                Mdash,
-                Ruler,
-                Strikethrough,
-                Underline,
-                InlineQuote,
-                Superscript,
-                Subscript,
-                Color,
-                LineBreak,
-                EscSpecialChars,
-            ],
-        )
+_DEFAULT_ELEMENTS: list[type[AbstractMarkup]] = [
+    UnorderedList,
+    OrderedList,
+    Code,
+    Noformat,
+    Monospaced,
+    Mention,
+    MailTo,
+    Attachment,
+    Link,
+    Image,
+    Table,
+    Headings,
+    Quote,
+    BlockQuote,
+    Panel,
+    Bold,
+    Ndash,
+    Mdash,
+    Ruler,
+    Strikethrough,
+    Underline,
+    InlineQuote,
+    Superscript,
+    Subscript,
+    Color,
+    LineBreak,
+    EscSpecialChars,
+]
 
-    def insert_after(self, element: Type[AbstractMarkup], new_element: Type[AbstractMarkup]):
-        index = self.index(element)
-        self.insert(index + 1, new_element)
 
-    def replace(self, old_element: Type[AbstractMarkup], new_element: Type[AbstractMarkup]):
-        index = self.index(old_element)
-        self[index] = new_element
+class MarkupElements:
+    """Ordered, typed container for markup element classes."""
+
+    def __init__(self, elements: list[type[AbstractMarkup]] | None = None) -> None:
+        self._elements: list[type[AbstractMarkup]] = list(elements or _DEFAULT_ELEMENTS)
+
+    def __iter__(self) -> Iterator[type[AbstractMarkup]]:
+        return iter(self._elements)
+
+    def __len__(self) -> int:
+        return len(self._elements)
+
+    def insert_after(
+        self,
+        element: type[AbstractMarkup],
+        new_element: type[AbstractMarkup],
+    ) -> None:
+        index = self._elements.index(element)
+        self._elements.insert(index + 1, new_element)
+
+    def replace(
+        self,
+        old_element: type[AbstractMarkup],
+        new_element: type[AbstractMarkup],
+    ) -> None:
+        index = self._elements.index(old_element)
+        self._elements[index] = new_element
 
     def expr(
         self,
         inline_markup: Forward,
         markup: Forward,
-        usernames: dict,
-        elements: Iterable[Type[AbstractMarkup]],
+        usernames: dict[str, str],
+        elements: Iterator[type[AbstractMarkup]],
     ) -> ParseExpression:
         return MatchFirst(
-            [element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr for element in elements],
+            [
+                element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr
+                for element in elements
+            ],
         )
