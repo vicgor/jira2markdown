@@ -2,7 +2,6 @@ import sys
 from pathlib import Path  # noqa: TC003
 from typing import Annotated
 
-import click
 import typer
 
 from jira2markdown import convert
@@ -14,7 +13,7 @@ def main(
 ) -> None:
     """Convert Jira markup to Markdown."""
     if text is not None and file is not None:
-        raise click.UsageError("Use either TEXT or --file, not both")
+        raise typer.BadParameter("Use either TEXT or --file, not both")
 
     if text is not None:
         content = text
@@ -23,7 +22,7 @@ def main(
     elif not sys.stdin.isatty():
         content = sys.stdin.read()
     else:
-        raise click.UsageError("Provide TEXT, --file, or pipe input via stdin")
+        raise typer.BadParameter("Provide TEXT, --file, or pipe input via stdin")
 
     typer.echo(convert(content), nl=False)
 
