@@ -2,10 +2,10 @@ from jira2markdown import convert
 
 
 class TestNoformat:
-    def test_basic_conversion(self):
+    def test_basic_conversion(self) -> None:
         assert convert("{noformat}preformatted piece of text{noformat}") == "```\npreformatted piece of text\n```"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         assert convert("{noformat}\npreformatted piece\nof text\n{noformat}") == "```\npreformatted piece\nof text\n```"
         assert (
             convert("{noformat}\n\n\n  preformatted piece\n   of text\n\n{noformat}")
@@ -16,7 +16,7 @@ class TestNoformat:
             == "```\n  \n  \n  preformatted piece\n   of text\n```"
         )
 
-    def test_multiple_parameters(self):
+    def test_multiple_parameters(self) -> None:
         assert (
             convert(
                 """
@@ -36,7 +36,7 @@ surrounded with a noformat
 
 
 class TestCode:
-    def test_default_language(self):
+    def test_default_language(self) -> None:
         assert (
             convert(
                 """
@@ -54,7 +54,7 @@ def test_code():
 """
         )
 
-    def test_explicit_language(self):
+    def test_explicit_language(self) -> None:
         assert (
             convert(
                 """
@@ -74,7 +74,7 @@ def test_code():
 """
         )
 
-    def test_decorations(self):
+    def test_decorations(self) -> None:
         assert (
             convert(
                 """
@@ -98,7 +98,7 @@ public String getFoo()
 """
         )
 
-    def test_multiple_parameters(self):
+    def test_multiple_parameters(self) -> None:
         assert (
             convert(
                 """
@@ -124,7 +124,7 @@ struct Foo {
 
 
 class TestPanel:
-    def test_basic_conversion(self):
+    def test_basic_conversion(self) -> None:
         assert (
             convert(
                 """
@@ -140,7 +140,7 @@ class TestPanel:
 """
         )
 
-    def test_title(self):
+    def test_title(self) -> None:
         assert (
             convert(
                 """
@@ -155,7 +155,7 @@ Some text with a title
 """
         )
 
-    def test_multiple_parameters(self):
+    def test_multiple_parameters(self) -> None:
         assert (
             convert(
                 """

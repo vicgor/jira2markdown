@@ -3,7 +3,7 @@ from jira2markdown import convert
 
 
 class TestUnorderedList:
-    def test_bullets(self):
+    def test_bullets(self) -> None:
         assert (
             convert(
                 """
@@ -41,7 +41,7 @@ class TestUnorderedList:
         """
         )
 
-    def test_mixed_bullets(self):
+    def test_mixed_bullets(self) -> None:
         assert (
             convert(
                 """
@@ -57,12 +57,12 @@ class TestUnorderedList:
         """
         )
 
-    def test_match_start_conditions(self):
+    def test_match_start_conditions(self) -> None:
         assert convert("* Item") == "- Item"
         assert convert("\n* Item") == "\n- Item"
         assert convert("  * Item") == r"- Item"
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         assert (
             convert(
                 """
@@ -82,7 +82,7 @@ Break
 """
         )
 
-    def test_start_indent(self):
+    def test_start_indent(self) -> None:
         assert (
             convert(
                 """
@@ -120,7 +120,7 @@ Break
 """
         )
 
-    def test_indent_step(self):
+    def test_indent_step(self) -> None:
         assert (
             convert(
                 """
@@ -136,7 +136,7 @@ Break
 """
         )
 
-    def test_empty_list(self):
+    def test_empty_list(self) -> None:
         assert (
             convert(
                 """
@@ -155,7 +155,7 @@ Break
         """
         )
 
-    def test_text_indent(self):
+    def test_text_indent(self) -> None:
         assert (
             convert(
                 """
@@ -170,7 +170,7 @@ Some text
 """
         )
 
-    def test_list_indent(self):
+    def test_list_indent(self) -> None:
         assert (
             convert(
                 """
@@ -188,7 +188,7 @@ Some text
 
 
 class TestOrderedList:
-    def test_bullets(self):
+    def test_bullets(self) -> None:
         assert (
             convert(
                 """
@@ -208,7 +208,7 @@ class TestOrderedList:
         """
         )
 
-    def test_mixed_bullets(self):
+    def test_mixed_bullets(self) -> None:
         assert (
             convert(
                 """
@@ -224,7 +224,7 @@ class TestOrderedList:
         """
         )
 
-    def test_multiline(self):
+    def test_multiline(self) -> None:
         assert (
             convert(
                 """
@@ -244,7 +244,7 @@ Break
 """
         )
 
-    def test_start_indent(self):
+    def test_start_indent(self) -> None:
         assert (
             convert(
                 """
@@ -270,7 +270,7 @@ Break
 """
         )
 
-    def test_indent_step(self):
+    def test_indent_step(self) -> None:
         assert (
             convert(
                 """
@@ -286,7 +286,7 @@ Break
 """
         )
 
-    def test_empty_list(self):
+    def test_empty_list(self) -> None:
         assert (
             convert(
                 """
@@ -300,7 +300,7 @@ Break
         """
         )
 
-    def test_list_indent(self):
+    def test_list_indent(self) -> None:
         assert (
             convert(
                 """
