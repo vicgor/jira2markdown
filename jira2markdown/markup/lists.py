@@ -39,6 +39,9 @@ class ListIndent(Token):
         self.indent_state = indent_state
         self.tokens = tokens
 
+    # parseImpl is the correct override point for Token subclasses: _parseNoCache
+    # dispatches to it after pre-parse hooks; postParse only processes results.
+    # No public snake_case alias exists in pyparsing 3.x.
     def parseImpl(self, instring: str, loc: int, doActions: bool = True) -> tuple[int, Any]:
         exprs = []
         for token in self.tokens:
