@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from pyparsing import Forward, ParserElement
 
@@ -7,7 +7,7 @@ from jira2markdown.elements import MarkupElements
 ParserElement.set_default_whitespace_chars("")
 
 
-def convert(text: str, usernames: Optional[dict] = None, elements: Optional[MarkupElements] = None) -> str:
+def convert(text: str, usernames: dict[str, str] | None = None, elements: MarkupElements | None = None) -> str:
     usernames = usernames or {}
     elements = elements or MarkupElements()
 
