@@ -1,4 +1,6 @@
 # ruff: noqa: W291
+import pytest
+
 from jira2markdown.parser import convert
 
 
@@ -153,7 +155,10 @@ text after table
 """
         )
 
-    def test_empty_start_lines(self) -> None:
-        assert convert("  \n|header") == "  \n|header|\n|---|\n"
-        assert convert("  \n \t \n|header") == "  \n \t \n|header|\n|---|\n"
-        assert convert("  \n text \n|header") == "  \n text \n\n|header|\n|---|\n"
+    @pytest.mark.parametrize("src,expected", [
+        ("  \n|header", "  \n|header|\n|---|\n"),
+        ("  \n \t \n|header", "  \n \t \n|header|\n|---|\n"),
+        ("  \n text \n|header", "  \n text \n\n|header|\n|---|\n"),
+    ])
+    def test_empty_start_lines(self, src: str, expected: str) -> None:
+        assert convert(src) == expected

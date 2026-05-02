@@ -1,4 +1,6 @@
 # ruff: noqa: W291
+import pytest
+
 from jira2markdown import convert
 
 
@@ -57,10 +59,13 @@ class TestUnorderedList:
         """
         )
 
-    def test_match_start_conditions(self) -> None:
-        assert convert("* Item") == "- Item"
-        assert convert("\n* Item") == "\n- Item"
-        assert convert("  * Item") == r"- Item"
+    @pytest.mark.parametrize("src,expected", [
+        ("* Item", "- Item"),
+        ("\n* Item", "\n- Item"),
+        ("  * Item", r"- Item"),
+    ])
+    def test_match_start_conditions(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
     def test_multiline(self) -> None:
         assert (

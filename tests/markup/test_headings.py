@@ -1,14 +1,14 @@
+import pytest
+
 from jira2markdown.parser import convert
 
 
-class TestHeadings:
-    def test_basic_conversion(self) -> None:
-        assert convert("h1. Title text") == "# Title text"
-
-    def test_header_levels(self) -> None:
-        assert convert("h6. Title") == "###### Title"
-        assert convert("h7. Title") == "h7. Title"
-
-    def test_match_start_conditions(self) -> None:
-        assert convert("  h2. Title") == "  ## Title"
-        assert convert(" A  h2. Title") == " A  h2. Title"
+@pytest.mark.parametrize("src,expected", [
+    ("h1. Title text", "# Title text"),
+    ("h6. Title", "###### Title"),
+    ("h7. Title", "h7. Title"),
+    ("  h2. Title", "  ## Title"),
+    (" A  h2. Title", " A  h2. Title"),
+])
+def test_headings(src: str, expected: str) -> None:
+    assert convert(src) == expected
