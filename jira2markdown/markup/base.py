@@ -1,10 +1,18 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, TypedDict
+
+from pyparsing import Forward
 
 if TYPE_CHECKING:
-    from pyparsing import Forward, ParserElement
+    from pyparsing import ParserElement
+
+
+class MarkupContext(TypedDict):
+    inline_markup: Forward
+    markup: Forward
+    usernames: dict[str, str]
 
 
 class AbstractMarkup(ABC):
@@ -19,7 +27,7 @@ class AbstractMarkup(ABC):
         self.inline_markup = inline_markup
         self.markup = markup
         self.usernames: dict[str, str] = usernames or {}
-        self.init_kwargs: dict[str, Any] = {
+        self.init_kwargs: MarkupContext = {
             "inline_markup": inline_markup,
             "markup": markup,
             "usernames": self.usernames,
