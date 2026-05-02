@@ -3,7 +3,13 @@ import sys
 from pathlib import Path  # noqa: TC003
 from typing import Annotated
 
-import typer
+try:
+    import typer
+except ImportError:
+    raise SystemExit(
+        "The jira2markdown CLI requires extra dependencies.\n"
+        "Install them with: pip install jira2markdown[cli]"
+    )
 
 from jira2markdown import convert
 
