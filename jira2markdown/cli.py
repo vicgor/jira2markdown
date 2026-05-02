@@ -46,7 +46,7 @@ def main(
     result = convert(content)
     if output is not None:
         try:
-            output.write_text(result)
+            output.write_text(result, encoding="utf-8")
         except OSError as exc:
             raise typer.BadParameter(f"Cannot write to {output}: {exc}", param_hint="'--output'") from exc
     else:
