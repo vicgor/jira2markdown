@@ -241,15 +241,26 @@ class TestSubscript:
 
 
 class TestColor:
-    def test_color_value(self) -> None:
-        assert (
-            convert("start {color:#0077ff}hex color{color} text") == 'start <font color="#0077ff">hex color</font> text'
-        )
-        assert convert("start {color:red}named color{color} text") == 'start <font color="red">named color</font> text'
-        assert (
-            convert("start {color:rgba(255, 127, 63, 0.3)}rgba color{color} text")
-            == 'start <font color="#ff7f3f">rgba color</font> text'
-        )
+    @pytest.mark.parametrize("src,expected", [
+        (
+            "start {color:#0077ff}hex color{color} text",
+            'start <font color="#0077ff">hex color</font> text',
+            id="hex_color",
+        ),
+        (
+            "start {color:red}named color{color} text",
+            'start <font color="red">named color</font> text',
+            id="named_color",
+        ),
+        (
+            "start {color:rgba(255, 127, 63, 0.3)}rgba color{color} text",
+            'start <font color="#ff7f3f">rgba color</font> text',
+            id="rgba_color",
+        ),
+    ])
+    def test_color_value(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
+
     @pytest.mark.parametrize("src,expected", [
         ("{color:rgba(255,0,0,1)}x{color}", '<font color="#ff0000">x</font>'),
         ("{color:rgba(0,255,0,1)}x{color}", '<font color="#00ff00">x</font>'),
@@ -259,9 +270,20 @@ class TestColor:
     def test_rgba_zero_padding(self, src: str, expected: str) -> None:
         assert convert(src) == expected
 
-    def test_line_endings(self) -> None:
-        assert convert("{color:#0077ff}colored{color}") == '<font color="#0077ff">colored</font>'
-        assert convert("\n{color:#0077ff}colored{color}\n") == '\n<font color="#0077ff">colored</font>\n'
+    @pytest.mark.parametrize("src,expected", [
+        (
+            "{color:#0077ff}colored{color}",
+            '<font color="#0077ff">colored</font>',
+            id="no_newlines",
+        ),
+        (
+            "\n{color:#0077ff}colored{color}\n",
+            '\n<font color="#0077ff">colored</font>\n',
+            id="with_newlines",
+        ),
+    ])
+    def test_line_endings(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
     def test_empty_text(self) -> None:
         assert convert("{color:#0077ff} {color}") == " "

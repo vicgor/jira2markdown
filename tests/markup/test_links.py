@@ -57,36 +57,54 @@ class TestMention:
         "100:internal-id": "elliot",
     }
 
-    def test_basic_conversion(self) -> None:
-        assert convert("[~100:internal-id]") == "@100:internal-id"
-        assert convert("[~100:internal-id]", self.USERNAMES) == "@elliot"
+    @pytest.mark.parametrize("src,expected", [
+        ("[~100:internal-id]", "@100:internal-id", id="without_usernames"),
+        ("[~100:internal-id]", "@elliot", id="with_usernames"),
+    ])
+    def test_basic_conversion(self, src: str, expected: str) -> None:
+        usernames = self.USERNAMES if expected == "@elliot" else None
+        assert convert(src, usernames) == expected
 
-    def test_prefix(self) -> None:
-        assert convert("[~accountId:100:internal-id]") == "@100:internal-id"
-        assert convert("[~accountid:100:internal-id]", self.USERNAMES) == "@elliot"
+    @pytest.mark.parametrize("src,expected", [
+        ("[~accountId:100:internal-id]", "@100:internal-id", id="without_usernames"),
+        ("[~accountid:100:internal-id]", "@elliot", id="with_usernames"),
+    ])
+    def test_prefix(self, src: str, expected: str) -> None:
+        usernames = self.USERNAMES if expected == "@elliot" else None
+        assert convert(src, usernames) == expected
 
-    def test_alias(self) -> None:
-        assert convert("[Firstname Lastname|~accountid:100:internal-id]") == "@100:internal-id"
-        assert convert("[Firstname Lastname|~accountid:100:internal-id]", self.USERNAMES) == "@elliot"
+    @pytest.mark.parametrize("src,expected", [
+        ("[Firstname Lastname|~accountid:100:internal-id]", "@100:internal-id", id="without_usernames"),
+        ("[Firstname Lastname|~accountid:100:internal-id]", "@elliot", id="with_usernames"),
+    ])
+    def test_alias(self, src: str, expected: str) -> None:
+        usernames = self.USERNAMES if expected == "@elliot" else None
+        assert convert(src, usernames) == expected
 
-    def test_spacing(self) -> None:
-        assert convert("text[~userA]") == "text @userA"
-        assert convert("[~userA]text") == "@userA text"
-        assert convert("[~userA][~userB]") == "@userA @userB"
-        assert convert("[~userA] [~userB]") == "@userA @userB"
-        assert convert("[~userA]\t[~userB]") == "@userA\t@userB"
-        assert convert("[~userA]\n[~userB]") == "@userA\n@userB"
+    @pytest.mark.parametrize("src,expected", [
+        ("text[~userA]", "text @userA"),
+        ("[~userA]text", "@userA text"),
+        ("[~userA][~userB]", "@userA @userB"),
+        ("[~userA] [~userB]", "@userA @userB"),
+        ("[~userA]\t[~userB]", "@userA\t@userB"),
+        ("[~userA]\n[~userB]", "@userA\n@userB"),
+    ])
+    def test_spacing(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
-    def test_punctuation(self) -> None:
-        assert convert("[~userA].") == "@userA."
-        assert convert("[~userA]:") == "@userA:"
-        assert convert("[~userA]?") == "@userA?"
+    @pytest.mark.parametrize("src,expected", [
+        ("[~userA].", "@userA."),
+        ("[~userA]:", "@userA:"),
+        ("[~userA]?", "@userA?"),
+    ])
+    def test_punctuation(self, src: str, expected: str) -> None:
+        assert convert(src) == expected
 
     @pytest.mark.parametrize(
         "src,expected",
         [
             ("([~userA])", "(@userA)"),
-            (",[~userA],", ",@userA,"),
+            (",[ ~userA],", ",@userA,"),
             (";[~userA]", ";@userA"),
         ],
     )
