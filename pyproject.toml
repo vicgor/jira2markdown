@@ -32,6 +32,8 @@ cli = [
 
 [project.urls]
 repository = "https://github.com/vicgor/jira2markdown"
+bug-tracker = "https://github.com/vicgor/jira2markdown/issues"
+changelog = "https://github.com/vicgor/jira2markdown/blob/main/CHANGELOG.md"
 
 [project.scripts]
 jira2markdown = "jira2markdown.cli:cli"
