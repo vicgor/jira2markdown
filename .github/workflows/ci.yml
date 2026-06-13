@@ -35,7 +35,7 @@ jobs:
         run: uv run ruff format --check .
 
       - name: Type check (mypy)
-        run: uv run mypy .
+        run: uv run mypy src/ tests/
 
   test:
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
           enable-cache: true
 
       - name: Sync dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --extra cli
 
       - name: Tests (pytest)
         run: uv run pytest
