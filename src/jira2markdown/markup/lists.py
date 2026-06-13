@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from pyparsing import (
     Char,
@@ -24,9 +24,6 @@ from pyparsing import (
 from jira2markdown.markup.advanced import Panel
 from jira2markdown.markup.base import AbstractMarkup
 from jira2markdown.markup.text_effects import BlockQuote, Color
-
-if TYPE_CHECKING:
-    pass
 
 
 class ListIndentState:
