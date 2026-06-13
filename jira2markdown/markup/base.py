@@ -3,10 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, TypedDict
 
-from pyparsing import Forward
-
 if TYPE_CHECKING:
-    from pyparsing import ParserElement
+    from pyparsing import Forward, ParserElement
 
 
 class MarkupContext(TypedDict):
