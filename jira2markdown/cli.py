@@ -8,7 +8,7 @@ try:
 except ImportError:
     raise SystemExit(
         "The jira2markdown CLI requires extra dependencies.\n"
-        "Install them with: pip install jira2markdown[cli]"
+        "Install them with: pip install jira2markdown[cli]",
     )
 
 from jira2markdown import convert

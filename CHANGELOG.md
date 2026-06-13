@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.6] - 2026-06-13
+
 ### Bug Fixes
 
 - Add missing blank line and reformat parametrize calls in test_links ([`2c40969`](https://github.com/vicgor/jira2markdown/commit/2c4096967477e76d8ecadd35590800bbd5de9a97))
@@ -329,7 +331,8 @@ Update README.md ([`bcee772`](https://github.com/vicgor/jira2markdown/commit/bce
 
 - Initial commit ([`e151a98`](https://github.com/vicgor/jira2markdown/commit/e151a984212cfa547c98db727dd3cb67c547b6b7))
 
-[unreleased]: https://github.com/vicgor/jira2markdown/compare/v0.5..HEAD
+[unreleased]: https://github.com/vicgor/jira2markdown/compare/v0.6..HEAD
+[0.6]: https://github.com/vicgor/jira2markdown/compare/v0.5..v0.6
 [0.5]: https://github.com/vicgor/jira2markdown/compare/v0.4..v0.5
 [0.4]: https://github.com/vicgor/jira2markdown/compare/v0.3.7..v0.4
 [0.3.7]: https://github.com/vicgor/jira2markdown/compare/v0.3.6..v0.3.7
