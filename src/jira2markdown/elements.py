@@ -78,7 +78,6 @@ class MarkupElements:
         element: type[AbstractMarkup],
         new_element: type[AbstractMarkup],
     ) -> None:
-        """Insert new_element immediately after element."""
         index = self._elements.index(element)
         self._elements.insert(index + 1, new_element)
 
@@ -87,12 +86,10 @@ class MarkupElements:
         old_element: type[AbstractMarkup],
         new_element: type[AbstractMarkup],
     ) -> None:
-        """Replace old_element with new_element in-place."""
         index = self._elements.index(old_element)
         self._elements[index] = new_element
 
     def remove(self, element: type[AbstractMarkup]) -> None:
-        """Remove element from the list. Raises ValueError if not present."""
         if element not in self._elements:
             raise ValueError(f"{element.__name__} is not in the elements list")
         self._elements.remove(element)
