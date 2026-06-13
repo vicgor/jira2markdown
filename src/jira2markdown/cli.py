@@ -7,8 +7,7 @@ try:
     import typer
 except ImportError as exc:
     raise SystemExit(
-        "The jira2markdown CLI requires extra dependencies.\n"
-        "Install them with: pip install jira2markdown[cli]",
+        "The jira2markdown CLI requires extra dependencies.\nInstall them with: pip install jira2markdown[cli]",
     ) from exc
 
 from jira2markdown import convert

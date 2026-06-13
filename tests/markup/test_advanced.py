@@ -7,20 +7,23 @@ class TestNoformat:
     def test_basic_conversion(self) -> None:
         assert convert("{noformat}preformatted piece of text{noformat}") == "```\npreformatted piece of text\n```"
 
-    @pytest.mark.parametrize("src,expected", [
-        (
-            "{noformat}\npreformatted piece\nof text\n{noformat}",
-            "```\npreformatted piece\nof text\n```",
-        ),
-        (
-            "{noformat}\n\n\n  preformatted piece\n   of text\n\n{noformat}",
-            "```\n  preformatted piece\n   of text\n```",
-        ),
-        (
-            "{noformat}  \n  \n  preformatted piece\n   of text\n{noformat}",
-            "```\n  \n  \n  preformatted piece\n   of text\n```",
-        ),
-    ])
+    @pytest.mark.parametrize(
+        "src,expected",
+        [
+            (
+                "{noformat}\npreformatted piece\nof text\n{noformat}",
+                "```\npreformatted piece\nof text\n```",
+            ),
+            (
+                "{noformat}\n\n\n  preformatted piece\n   of text\n\n{noformat}",
+                "```\n  preformatted piece\n   of text\n```",
+            ),
+            (
+                "{noformat}  \n  \n  preformatted piece\n   of text\n{noformat}",
+                "```\n  \n  \n  preformatted piece\n   of text\n```",
+            ),
+        ],
+    )
     def test_multiline(self, src: str, expected: str) -> None:
         assert convert(src) == expected
 
