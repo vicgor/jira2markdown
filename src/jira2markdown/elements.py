@@ -93,6 +93,8 @@ class MarkupElements:
 
     def remove(self, element: type[AbstractMarkup]) -> None:
         """Remove element from the list. Raises ValueError if not present."""
+        if element not in self._elements:
+            raise ValueError(f"{element.__name__} is not in the elements list")
         self._elements.remove(element)
 
     def expr(
@@ -103,5 +105,8 @@ class MarkupElements:
         elements: Iterable[type[AbstractMarkup]],
     ) -> ParseExpression:
         return MatchFirst(
-            [element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr for element in elements],
+            [
+                element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr
+                for element in elements
+            ],
         )
