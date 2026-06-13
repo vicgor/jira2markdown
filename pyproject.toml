@@ -73,7 +73,9 @@ select = [
     "UP",     # pyupgrade
     "W",      # pycodestyle warnings
 ]
-ignore = []
+ignore = [
+    "COM812",  # trailing comma — conflicts with ruff formatter
+]
 fixable = ["ALL"]
 unfixable = []
 
