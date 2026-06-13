@@ -1,0 +1,60 @@
+[changelog]
+header = """
+# Changelog\n
+All notable changes to this project will be documented in this file.\n
+"""
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits %}
+- {% if commit.scope %}**{{ commit.scope }}:** {% endif %}\
+{{ commit.message | upper_first }} \
+([`{{ commit.id | truncate(length=7, end="") }}`](https://github.com/vicgor/jira2markdown/commit/{{ commit.id }}))\
+{% endfor %}
+{% endfor %}\n
+"""
+trim = true
+footer = """
+{% for release in releases -%}
+    {% if release.version -%}
+        {% if release.previous.version -%}
+            [{{ release.version | trim_start_matches(pat="v") }}]: \
+                https://github.com/vicgor/jira2markdown/compare/{{ release.previous.version }}..{{ release.version }}
+        {% endif -%}
+    {% else -%}
+        [unreleased]: https://github.com/vicgor/jira2markdown/compare/\
+            {{ releases | filter(attribute="version") | first | default(value="") | get(key="version", default="") }}..HEAD
+    {% endif -%}
+{% endfor %}
+"""
+
+[git]
+conventional_commits = true
+filter_unconventional = false
+split_commits = false
+
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "v[0-9].*"
+skip_tags = ""
+ignore_tags = ""
+sort_commits = "newest"
+
+commit_parsers = [
+  { message = "^feat",     group = "Features" },
+  { message = "^fix",      group = "Bug Fixes" },
+  { message = "^refactor", group = "Refactoring" },
+  { message = "^ci",       group = "CI/CD" },
+  { message = "^chore",    group = "Chores" },
+  { message = "^docs",     group = "Documentation" },
+  { message = "^perf",     group = "Performance" },
+  { message = "^test",     group = "Testing" },
+  { message = "^revert",   group = "Reverts" },
+  { message = ".*",        group = "Other" },   # ← добавить
+]
+
