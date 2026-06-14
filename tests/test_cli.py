@@ -110,7 +110,7 @@ class TestOutputFlag:
 
 class TestHelpOutput:
     def test_help(self) -> None:
-        result = runner.invoke(app, ["--help"])
+        result = runner.invoke(app, ["--help"], color=False)
         assert result.exit_code == 0
         assert "Jira markup" in result.output
         assert "--file" in result.output
