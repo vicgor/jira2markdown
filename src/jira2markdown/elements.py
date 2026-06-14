@@ -102,8 +102,5 @@ class MarkupElements:
         elements: Iterable[type[AbstractMarkup]],
     ) -> ParseExpression:
         return MatchFirst(
-            [
-                element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr
-                for element in elements
-            ],
+            [element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr for element in elements],
         )
