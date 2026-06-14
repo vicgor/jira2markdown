@@ -1,5 +1,6 @@
 import signal
 import sys
+from importlib.metadata import version as _pkg_version
 from pathlib import Path  # noqa: TC003
 from typing import Annotated
 
@@ -21,10 +22,26 @@ except AttributeError:
     pass
 
 
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(_pkg_version("jira2markdown"))
+        raise typer.Exit()
+
+
 def main(
     text: Annotated[str | None, typer.Argument(help="Jira markup text to convert")] = None,
     file: Annotated[Path | None, typer.Option("-f", "--file", help="File containing Jira markup")] = None,
     output: Annotated[Path | None, typer.Option("-o", "--output", help="Write output to file")] = None,
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            callback=_version_callback,
+            is_eager=True,
+            help="Show version and exit",
+            show_default=False,
+        ),
+    ] = False,
 ) -> None:
     """Convert Jira markup to Markdown."""
     if text is not None and file is not None:
