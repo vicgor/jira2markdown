@@ -9,7 +9,7 @@ from jira2markdown.cli import main
 app = typer.Typer()
 app.command()(main)
 
-runner = CliRunner()
+runner = CliRunner(mix_stderr=False)
 
 
 def strip_ansi(text: str) -> str:
@@ -67,18 +67,18 @@ class TestMutuallyExclusive:
         f.write_text("*bold*")
         result = runner.invoke(app, ["*bold*", "-f", str(f)])
         assert result.exit_code != 0
-        assert "Use either TEXT or --file" in result.output
+        assert "Use either TEXT or --file" in result.stderr
 
 
 class TestErrorHandling:
     def test_file_not_found(self) -> None:
         result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
         assert result.exit_code != 0
-        assert "File not found" in result.output
+        assert "File not found" in result.stderr
 
     def test_file_not_found_shows_path(self) -> None:
         result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
-        assert "/nonexistent/path.txt" in result.output
+        assert "/nonexistent/path.txt" in result.stderr
 
 
 class TestOutputFlag:
@@ -110,7 +110,7 @@ class TestOutputFlag:
     def test_output_unwritable(self) -> None:
         result = runner.invoke(app, ["*bold*", "-o", "/nonexistent/dir/out.md"])
         assert result.exit_code != 0
-        assert "Cannot write to" in result.output
+        assert "Cannot write to" in result.stderr
 
 
 class TestHelpOutput:

@@ -28,8 +28,7 @@ def main(
 ) -> None:
     """Convert Jira markup to Markdown."""
     if text is not None and file is not None:
-        typer.echo("Error: Use either TEXT or --file, not both")
-        raise typer.Exit(code=2)
+        raise typer.BadParameter("Use either TEXT or --file, not both")
 
     if text is not None:
         content = text
@@ -37,21 +36,18 @@ def main(
         try:
             content = file.read_text()
         except FileNotFoundError:
-            typer.echo(f"Error: File not found: {file}")
-            raise typer.Exit(code=2)
+            raise typer.BadParameter(f"File not found: {file}", param_hint="'--file'")
     elif not sys.stdin.isatty():
         content = sys.stdin.read()
     else:
-        typer.echo("Error: Provide TEXT, --file, or pipe input via stdin")
-        raise typer.Exit(code=2)
+        raise typer.BadParameter("Provide TEXT, --file, or pipe input via stdin")
 
     result = convert(content)
     if output is not None:
         try:
             output.write_text(result, encoding="utf-8")
         except OSError as exc:
-            typer.echo(f"Error: Cannot write to {output}: {exc}")
-            raise typer.Exit(code=2)
+            raise typer.BadParameter(f"Cannot write to {output}: {exc}", param_hint="'--output'") from exc
     else:
         typer.echo(result, nl=False)
 
