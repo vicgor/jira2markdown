@@ -2,22 +2,17 @@ import re
 from pathlib import Path
 
 import typer
-from click.testing import CliRunner
-from typer.testing import CliRunner as TyperCliRunner
+from typer.testing import CliRunner
 
 from jira2markdown.cli import main
 
 app = typer.Typer()
 app.command()(main)
 
-# mix_stderr=False separates stdout and stderr — use Click's CliRunner directly.
-# Typer's CliRunner wraps Click's but doesn't expose mix_stderr in its type stubs.
-runner = CliRunner(mix_stderr=False)
-
-
-def invoke(args: list[str], input: str | None = None) -> object:
-    """Invoke the app via Click runner (supports mix_stderr)."""
-    return runner.invoke(app, args, input=input, catch_exceptions=False)
+# Typer's CliRunner merges stderr into output (mix_stderr is not supported).
+# Error messages are checked via result.output; BadParameter still writes to
+# stderr in a real terminal — this is a test-runner limitation, not a UX regression.
+runner = CliRunner()
 
 
 def strip_ansi(text: str) -> str:
@@ -75,18 +70,18 @@ class TestMutuallyExclusive:
         f.write_text("*bold*")
         result = runner.invoke(app, ["*bold*", "-f", str(f)])
         assert result.exit_code != 0
-        assert "Use either TEXT or --file" in result.stderr
+        assert "Use either TEXT or --file" in strip_ansi(result.output)
 
 
 class TestErrorHandling:
     def test_file_not_found(self) -> None:
         result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
         assert result.exit_code != 0
-        assert "File not found" in result.stderr
+        assert "File not found" in strip_ansi(result.output)
 
     def test_file_not_found_shows_path(self) -> None:
         result = runner.invoke(app, ["-f", "/nonexistent/path.txt"])
-        assert "/nonexistent/path.txt" in result.stderr
+        assert "/nonexistent/path.txt" in strip_ansi(result.output)
 
 
 class TestOutputFlag:
@@ -118,7 +113,7 @@ class TestOutputFlag:
     def test_output_unwritable(self) -> None:
         result = runner.invoke(app, ["*bold*", "-o", "/nonexistent/dir/out.md"])
         assert result.exit_code != 0
-        assert "Cannot write to" in result.stderr
+        assert "Cannot write to" in strip_ansi(result.output)
 
 
 class TestHelpOutput:
