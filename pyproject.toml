@@ -1,6 +1,6 @@
 [project]
 name = "jira2markdown"
-version = "0.6.0"
+version = "0.7.0"
 description = "Convert text from JIRA markup to Markdown using parsing expression grammars"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -60,22 +60,22 @@ line-length = 120
 
 [tool.ruff.lint]
 select = [
-    "ANN",    # flake8-annotations (type hints)
-    "C4",     # flake8-comprehensions
-    "COM",    # flake8-commas
-    "DTZ",    # flake8-datetimez
-    "E",      # pycodestyle errors
-    "F",      # Pyflakes
-    "I",      # isort
-    "PTH",    # flake8-use-pathlib
-    "RSE",    # flake8-raise
-    "Q",      # flake8-quotes
-    "TC",     # flake8-type-checking imports
-    "UP",     # pyupgrade
-    "W",      # pycodestyle warnings
+    "ANN",
+    "C4",
+    "COM",
+    "DTZ",
+    "E",
+    "F",
+    "I",
+    "PTH",
+    "RSE",
+    "Q",
+    "TC",
+    "UP",
+    "W",
 ]
 ignore = [
-    "COM812",  # trailing comma — conflicts with ruff formatter
+    "COM812",
 ]
 fixable = ["ALL"]
 unfixable = []

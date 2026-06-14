@@ -70,7 +70,7 @@ class TestConvertCustomElements:
         elements = MarkupElements()
         elements.remove(Bold)
         result = convert("*not bold*", elements=elements)
-        assert "**" not in result
+        assert result == r"\*not bold\*"
 
 
 class TestConvertEdgeCases:
