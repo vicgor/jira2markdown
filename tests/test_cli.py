@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import typer
@@ -9,6 +10,10 @@ app = typer.Typer()
 app.command()(main)
 
 runner = CliRunner()
+
+
+def strip_ansi(text: str) -> str:
+    return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
 
 class TestInlineText:
@@ -111,7 +116,8 @@ class TestOutputFlag:
 class TestHelpOutput:
     def test_help(self) -> None:
         result = runner.invoke(app, ["--help"])
+        output = strip_ansi(result.output)
         assert result.exit_code == 0
-        assert "Jira markup" in result.output
-        assert "--file" in result.output
-        assert "--output" in result.output
+        assert "Jira markup" in output
+        assert "--file" in output
+        assert "--output" in output

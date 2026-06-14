@@ -59,11 +59,14 @@ class TestUnorderedList:
         """
         )
 
-    @pytest.mark.parametrize("src,expected", [
-        ("* Item", "- Item"),
-        ("\n* Item", "\n- Item"),
-        ("  * Item", r"- Item"),
-    ])
+    @pytest.mark.parametrize(
+        "src,expected",
+        [
+            ("* Item", "- Item"),
+            ("\n* Item", "\n- Item"),
+            ("  * Item", r"- Item"),
+        ],
+    )
     def test_match_start_conditions(self, src: str, expected: str) -> None:
         assert convert(src) == expected
 

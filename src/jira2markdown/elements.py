@@ -89,6 +89,11 @@ class MarkupElements:
         index = self._elements.index(old_element)
         self._elements[index] = new_element
 
+    def remove(self, element: type[AbstractMarkup]) -> None:
+        if element not in self._elements:
+            raise ValueError(f"{element.__name__} is not in the elements list")
+        self._elements.remove(element)
+
     def expr(
         self,
         inline_markup: Forward,
@@ -97,8 +102,5 @@ class MarkupElements:
         elements: Iterable[type[AbstractMarkup]],
     ) -> ParseExpression:
         return MatchFirst(
-            [
-                element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr
-                for element in elements
-            ],
+            [element(inline_markup=inline_markup, markup=markup, usernames=usernames).expr for element in elements],
         )

@@ -7,8 +7,7 @@ try:
     import typer
 except ImportError as exc:
     raise SystemExit(
-        "The jira2markdown CLI requires extra dependencies.\n"
-        "Install them with: pip install jira2markdown[cli]",
+        "The jira2markdown CLI requires extra dependencies.\nInstall them with: pip install jira2markdown[cli]",
     ) from exc
 
 from jira2markdown import convert
@@ -29,7 +28,8 @@ def main(
 ) -> None:
     """Convert Jira markup to Markdown."""
     if text is not None and file is not None:
-        raise typer.BadParameter("Use either TEXT or --file, not both")
+        typer.echo("Error: Use either TEXT or --file, not both")
+        raise typer.Exit(code=2)
 
     if text is not None:
         content = text
@@ -37,18 +37,21 @@ def main(
         try:
             content = file.read_text()
         except FileNotFoundError:
-            raise typer.BadParameter(f"File not found: {file}", param_hint="'--file'")
+            typer.echo(f"Error: File not found: {file}")
+            raise typer.Exit(code=2)
     elif not sys.stdin.isatty():
         content = sys.stdin.read()
     else:
-        raise typer.BadParameter("Provide TEXT, --file, or pipe input via stdin")
+        typer.echo("Error: Provide TEXT, --file, or pipe input via stdin")
+        raise typer.Exit(code=2)
 
     result = convert(content)
     if output is not None:
         try:
             output.write_text(result, encoding="utf-8")
         except OSError as exc:
-            raise typer.BadParameter(f"Cannot write to {output}: {exc}", param_hint="'--output'") from exc
+            typer.echo(f"Error: Cannot write to {output}: {exc}")
+            raise typer.Exit(code=2)
     else:
         typer.echo(result, nl=False)
 
