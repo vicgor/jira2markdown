@@ -41,6 +41,7 @@ jira2markdown = "jira2markdown.cli:cli"
 [dependency-groups]
 dev = [
     "pytest>=8",
+    "pytest-cov>=5",
     "ruff>=0.4",
     "mypy>=1.10",
     "typer>=0.25.1",
