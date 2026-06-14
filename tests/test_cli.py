@@ -2,14 +2,22 @@ import re
 from pathlib import Path
 
 import typer
-from typer.testing import CliRunner
+from click.testing import CliRunner
+from typer.testing import CliRunner as TyperCliRunner
 
 from jira2markdown.cli import main
 
 app = typer.Typer()
 app.command()(main)
 
+# mix_stderr=False separates stdout and stderr — use Click's CliRunner directly.
+# Typer's CliRunner wraps Click's but doesn't expose mix_stderr in its type stubs.
 runner = CliRunner(mix_stderr=False)
+
+
+def invoke(args: list[str], input: str | None = None) -> object:
+    """Invoke the app via Click runner (supports mix_stderr)."""
+    return runner.invoke(app, args, input=input, catch_exceptions=False)
 
 
 def strip_ansi(text: str) -> str:
